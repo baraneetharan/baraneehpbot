@@ -13,12 +13,8 @@
   "author": "Baraneetharan Ramasamy",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^3.13.1",
-    "botbuilder-teams": "^0.2.9",
-    "ngrok": "^3.2.7",
-    "restify": "^8.5.1"
-  },
-  "devDependencies": {    
-    "nodemon": "^2.0.4"
+    "botbuilder": "^3.9.1",
+    "nodemon": "^1.11.0",
+    "restify": "^5.2.0"
   }
 }
