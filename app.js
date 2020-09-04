@@ -1,22 +1,30 @@
-var restify = require('restify');
-var builder = require('botbuilder');
-
-// Setup Restify Server
-var server = restify.createServer();
+const restify = require('restify');
+const botbuilder = require('botbuilder');
+ 
+// Create bot adapter, which defines how the bot sends and receives messages.
+var adapter = new botbuilder.BotFrameworkAdapter({
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword
+});
+ 
+// Create HTTP server.
+let server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+    console.log(`\n${server.name} listening to ${server.url}`);
+    console.log(`\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator`);
 });
-
-// Create chat connector for communicating with the Bot Framework Service
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
-
-// Listen for messages from users 
-server.post('/api/messages', connector.listen());
-
-// Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
-var bot = new builder.UniversalBot(connector, function (session) {
-    session.send("Satish said: %s", session.message.text);
+ 
+// Listen for incoming requests at /api/messages.
+server.post('/api/messages', (req, res) => {
+    // Use the adapter to process the incoming web request into a TurnContext object.
+    adapter.processActivity(req, res, async (turnContext) => {
+        // Do something with this incoming activity!
+        if (turnContext.activity.type === 'message') {            
+            // Get the user's text
+            const utterance = turnContext.activity.text;
+ 
+            // send a reply
+            await turnContext.sendActivity(`I heard you say ${ utterance }`);
+        }
+    });
 });
